@@ -1,0 +1,3 @@
+// Simple route with a single predicate and a network backend
+hello: Path("/hello") -> "https://www.example.org";
+

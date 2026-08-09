@@ -1,0 +1,16 @@
+==================
+Simple route
+==================
+
+hello: Path("/hello") -> "https://www.example.org";
+
+---
+
+(source_file
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string))))
+    backend: (backend (string))))
