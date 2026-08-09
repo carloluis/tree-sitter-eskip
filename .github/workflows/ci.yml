@@ -4,7 +4,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: tree-sitter/setup-action/cli@v2
       - run: tree-sitter generate
       - run: tree-sitter test
