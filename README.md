@@ -132,6 +132,16 @@ Build with `make` or `cmake`.
 
 This repo ships as a Neovim plugin. Install it with your plugin manager, then call `setup()` to register the parser and enable highlighting.
 
+**vim.pack (built-in, no plugin manager required)**
+
+```lua
+-- in your init.lua:
+vim.pack.add({ "https://github.com/carloluis/tree-sitter-eskip" })
+require("tree-sitter-eskip").setup()
+```
+
+`vim.pack.add` downloads and installs the plugin on first run, then calls `:packadd` so it is available immediately in the same session.
+
 **lazy.nvim**
 
 ```lua
@@ -146,7 +156,7 @@ This repo ships as a Neovim plugin. Install it with your plugin manager, then ca
 }
 ```
 
-**vim-plug / packer / manual**
+**lazy.nvim / vim-plug / packer**
 
 ```lua
 -- in your init.lua, after the plugin is on the runtimepath:
@@ -163,7 +173,7 @@ Filetype detection for `*.eskip` files is handled automatically via `ftdetect/es
 
 After installing the plugin, run `:TSInstall eskip` once to compile the parser. Verify with:
 
-```
+```vim
 :checkhealth nvim-treesitter
 :InspectTree       " parse tree for the current buffer
 :Inspect           " highlight captures under cursor
