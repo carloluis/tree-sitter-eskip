@@ -159,7 +159,7 @@ require("tree-sitter-eskip").setup()
 2. Calls `vim.treesitter.language.register` to bind the `eskip` language to the `eskip` filetype.
 3. Creates a `FileType eskip` autocommand that starts tree-sitter highlighting for every eskip buffer.
 
-Filetype detection for `*.eskip` files is handled automatically via `ftdetect/eskip.vim`, which is sourced by Neovim's runtimepath on startup — no extra configuration needed.
+Filetype detection for `*.eskip` files is handled automatically via `ftdetect/eskip.lua`, which is sourced by Neovim's runtimepath on startup — no extra configuration needed.
 
 After installing the plugin, run `:TSInstall eskip` once to compile the parser. Verify with:
 
