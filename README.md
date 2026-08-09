@@ -128,6 +128,47 @@ const TSLanguage *tree_sitter_eskip(void);
 
 Build with `make` or `cmake`.
 
+### Neovim
+
+This repo ships as a Neovim plugin. Install it with your plugin manager, then call `setup()` to register the parser and enable highlighting.
+
+**lazy.nvim**
+
+```lua
+{
+  "carloluis/tree-sitter-eskip",
+  ft = "eskip",
+  config = function()
+    require("tree-sitter-eskip").setup()
+    -- then install the parser the first time:
+    -- :TSInstall eskip
+  end,
+}
+```
+
+**vim-plug / packer / manual**
+
+```lua
+-- in your init.lua, after the plugin is on the runtimepath:
+require("tree-sitter-eskip").setup()
+```
+
+`setup()` does three things:
+
+1. Registers the parser source with nvim-treesitter so `:TSInstall eskip` works.
+2. Calls `vim.treesitter.language.register` to bind the `eskip` language to the `eskip` filetype.
+3. Creates a `FileType eskip` autocommand that starts tree-sitter highlighting for every eskip buffer.
+
+Filetype detection for `*.eskip` files is handled automatically via `ftdetect/eskip.vim`, which is sourced by Neovim's runtimepath on startup — no extra configuration needed.
+
+After installing the plugin, run `:TSInstall eskip` once to compile the parser. Verify with:
+
+```
+:checkhealth nvim-treesitter
+:InspectTree       " parse tree for the current buffer
+:Inspect           " highlight captures under cursor
+```
+
 ## Development
 
 ```sh
