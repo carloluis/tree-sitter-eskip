@@ -14,3 +14,179 @@ hello: Path("/hello") -> "https://www.example.org";
         name: (identifier)
         arguments: (arguments (string))))
     backend: (backend (string))))
+
+
+==================
+Multiple predicates and filters
+==================
+
+api: Method("GET") && Path("/api")
+  -> setRequestHeader("X-Foo", "bar")
+  -> "https://backend.example.org";
+
+---
+
+(source_file
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string)))
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string))))
+    filter: (filter
+      name: (identifier)
+      arguments: (arguments (string) (string)))
+    backend: (backend (string))))
+
+==================
+Wildcard and shunt
+==================
+
+catchall: * -> status(404) -> <shunt>;
+
+---
+
+(source_file
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list (wildcard))
+    filter: (filter
+      name: (identifier)
+      arguments: (arguments (number)))
+    backend: (backend (shunt))))
+
+==================
+Load balanced backend with algorithm
+==================
+
+lb: Path("/lb") -> <roundRobin, "https://a.example.org", "https://b.example.org">;
+
+---
+
+(source_file
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string))))
+    backend: (backend
+      (lb_backend
+        algorithm: (algorithm)
+        endpoint: (string)
+        endpoint: (string)))))
+
+==================
+Load balanced backend without algorithm
+==================
+
+lb2: Path("/lb2") -> <"https://a.example.org", "https://b.example.org">;
+
+---
+
+(source_file
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string))))
+    backend: (backend
+      (lb_backend
+        endpoint: (string)
+        endpoint: (string)))))
+
+==================
+Loopback and dynamic backends
+==================
+
+loop: Path("/old") -> <loopback>;
+dyn: Path("/dyn") -> <dynamic>;
+
+---
+
+(source_file
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string))))
+    backend: (backend (loopback)))
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string))))
+    backend: (backend (dynamic))))
+
+==================
+Regexp, number and raw string arguments
+==================
+
+r: Host(/^example\.org$/) && Weight(100)
+  -> modPath(`/prefix/(.*)`, "/$1")
+  -> "https://example.org";
+
+---
+
+(source_file
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (regexp)))
+      (predicate
+        name: (identifier)
+        arguments: (arguments (number))))
+    filter: (filter
+      name: (identifier)
+      arguments: (arguments (string) (string)))
+    backend: (backend (string))))
+
+==================
+Escaped string content
+==================
+
+e: Path("/e") -> setResponseHeader("X-Quote", "a\"b") -> "https://example.org";
+
+---
+
+(source_file
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string))))
+    filter: (filter
+      name: (identifier)
+      arguments: (arguments
+        (string)
+        (string (escape_sequence))))
+    backend: (backend (string))))
+
+==================
+Comments
+==================
+
+// leading comment
+c: Path("/c") -> "https://example.org"; // trailing comment
+
+---
+
+(source_file
+  (comment)
+  (route_definition
+    id: (identifier)
+    predicates: (predicate_list
+      (predicate
+        name: (identifier)
+        arguments: (arguments (string))))
+    backend: (backend (string)))
+  (comment))

@@ -1,0 +1,26 @@
+// Simple route with a single predicate and a network backend
+hello: Path("/hello") -> "https://www.example.org";
+
+// Route with multiple predicates and filters
+api: Method("GET") && Host(/^api\.example\.org$/) && Path("/api/:id")
+  -> setRequestHeader("X-Foo", "bar")
+  -> ratelimit(10, "1m")
+  -> "https://backend.example.org";
+
+// Catch-all route that shunts the request
+catchall: * -> inlineContent("not found") -> status(404) -> <shunt>;
+
+// Load balanced backend with an explicit algorithm
+lb: Path("/lb")
+  -> <roundRobin, "https://a.example.org", "https://b.example.org">;
+
+// Load balanced backend without an explicit algorithm
+lb2: Path("/lb2") -> <"https://a.example.org", "https://b.example.org">;
+
+// Loopback and dynamic backends
+loop: Path("/old") -> setPath("/new") -> <loopback>;
+dyn: Path("/dyn") -> <dynamic>;
+
+// Numeric and raw string arguments
+weighted: Weight(100) && Path("/w") -> modPath(`/prefix/(.*)`, "/$1") -> "https://w.example.org";
+
