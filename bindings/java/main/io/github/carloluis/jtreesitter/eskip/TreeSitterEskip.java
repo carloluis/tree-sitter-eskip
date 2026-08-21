@@ -1,4 +1,4 @@
-package io.github.treesitter.jtreesitter.eskip;
+package io.github.carloluis.jtreesitter.eskip;
 
 import java.lang.foreign.*;
 

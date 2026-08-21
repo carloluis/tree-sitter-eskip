@@ -1,5 +1,5 @@
 import io.github.treesitter.jtreesitter.Language;
-import io.github.treesitter.jtreesitter.eskip.TreeSitterEskip;
+import io.github.carloluis.jtreesitter.eskip.TreeSitterEskip;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
