@@ -12,9 +12,39 @@ on:
         default: true
 
 jobs:
+  # ── version guard ─────────────────────────────────────────────────────────────
+  check-version:
+    name: Verify version consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          set -euo pipefail
+          NPM_VER=$(node -p "require('./package.json').version")
+          CARGO_VER=$(grep -m1 '^version' Cargo.toml | sed -E 's/version = "(.*)"/\1/')
+          PY_VER=$(grep -m1 '^version' pyproject.toml | sed -E 's/version = "(.*)"/\1/')
+          POM_VER=$(grep -m1 '<version>' pom.xml | sed -E 's/.*<version>(.*)<\/version>.*/\1/')
+          TS_VER=$(node -p "require('./tree-sitter.json').metadata.version")
+          MAKE_VER=$(grep -m1 '^VERSION' Makefile | sed -E 's/VERSION := (.*)/\1/')
+          echo "package.json=$NPM_VER Cargo.toml=$CARGO_VER pyproject.toml=$PY_VER pom.xml=$POM_VER tree-sitter.json=$TS_VER Makefile=$MAKE_VER"
+          for v in "$CARGO_VER" "$PY_VER" "$POM_VER" "$TS_VER" "$MAKE_VER"; do
+            if [ "$v" != "$NPM_VER" ]; then
+              echo "::error::Version mismatch across manifests: package.json=$NPM_VER vs $v"
+              exit 1
+            fi
+          done
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            TAG_VER="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VER" != "$NPM_VER" ]; then
+              echo "::error::Tag $GITHUB_REF_NAME does not match manifest version $NPM_VER"
+              exit 1
+            fi
+          fi
+
   # ── npm ──────────────────────────────────────────────────────────────────────
   npm:
     name: Publish to npm
+    needs: check-version
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,6 +64,7 @@ jobs:
   # ── crates.io ────────────────────────────────────────────────────────────────
   crates:
     name: Publish to crates.io
+    needs: check-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -50,6 +81,7 @@ jobs:
   # ── PyPI ─────────────────────────────────────────────────────────────────────
   pypi:
     name: Publish to PyPI
+    needs: check-version
     runs-on: ubuntu-latest
     permissions:
       id-token: write   # required for trusted publishing (OIDC)
@@ -69,6 +101,7 @@ jobs:
   # ── Maven Central ─────────────────────────────────────────────────────────────
   maven:
     name: Publish to Maven Central
+    needs: check-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
