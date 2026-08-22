@@ -94,7 +94,7 @@ jobs:
           python-version: "3.12"
       - run: pip install build twine
       - run: python -m build --sdist
-      - uses: pypa/cibuildwheel@v2
+      - uses: pypa/cibuildwheel@v4.2.0
         with:
           output-dir: dist
       - run: twine check dist/*
