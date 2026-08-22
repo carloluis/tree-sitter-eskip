@@ -74,7 +74,15 @@ jobs:
       - uses: actions/checkout@v6
       - uses: tree-sitter/setup-action/cli@v2
       - run: tree-sitter generate
-      - run: sudo apt-get update && sudo apt-get install -y libtree-sitter-dev
+      - run: |
+          git clone --depth 1 --branch "$TREE_SITTER_REF" "$TREE_SITTER_REPO" /tmp/tree-sitter-core
+          cc -shared -fPIC -I/tmp/tree-sitter-core/lib/include -I/tmp/tree-sitter-core/lib/src \
+            /tmp/tree-sitter-core/lib/src/lib.c -o libtree-sitter.so
+          sudo cp libtree-sitter.so /usr/local/lib/
+          make
+          sudo cp libtree-sitter-eskip.so /usr/local/lib/
+          sudo ldconfig
+          echo "LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           java-version: "23"
