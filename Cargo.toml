@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-eskip"
 description = "A descriptive configuration language designed for routing rules in Skipper"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Carloluis <carloluisr@gmail.com>"]
 license = "MIT"
 readme = "README.md"

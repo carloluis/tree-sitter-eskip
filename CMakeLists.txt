@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-eskip
-        VERSION "0.1.0"
+        VERSION "0.1.1"
         DESCRIPTION "A descriptive configuration language designed for routing rules in Skipper"
         HOMEPAGE_URL "https://github.com/carloluis/tree-sitter-eskip"
         LANGUAGES C)

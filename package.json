@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-eskip",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A descriptive configuration language designed for routing rules in Skipper",
   "type": "module",
   "repository": {
